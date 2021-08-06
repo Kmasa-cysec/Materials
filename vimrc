@@ -12,7 +12,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " git
 Plug 'lambdalisue/gina.vim'
-Plug 'tpope/vim-fugitive'
+"Plug 'tpope/vim-fugitive'
 " シンタックスハイライト
 Plug 'sheerun/vim-polyglot'
 " インクリメンタルサーチ
@@ -26,25 +26,19 @@ Plug 'itchyny/vim-cursorword'
 Plug 'tyru/open-browser.vim'
 " ファイラ
 Plug 'cocopon/vaffle.vim'
+Plug 'lambdalisue/fern.vim'
 " カラースキーム
 Plug 'morhetz/gruvbox'
-Plug 'whatyouhide/vim-gotham'
-Plug 'ghifarit53/tokyonight-vim'
 " Lsp関連のプラグイン
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'lambdalisue/gina.vim'
 
-Plug 'thinca/vim-quickrun', {'on': 'QuickRun'}
-Plug 'Shougo/vimproc.vim', {'do': 'make'}
-
+" Language
+Plug 'OmniSharp/omnisharp-vim'
 Plug 'rust-lang/rust.vim'
-"LaTeX
-Plug 'lervag/vimtex'
 call plug#end()
-
 
 " setting vim
 if !has('nvim')
@@ -53,14 +47,6 @@ endif
 
 "syntax enable
 filetype plugin indent on
-
-set termguicolors
-
-let g:tokyonight_style = 'night' " available: night, storm
-let g:tokyonight_enable_italic = 1
-
-syntax enable
-colorscheme gotham
 
 set number
 set autoindent
@@ -133,89 +119,33 @@ function! RenderMyFavoriteIcon(item) abort
 endfunction
 let g:vaffle_render_custom_icon = 'RenderMyFavoriteIcon'
 
-nnoremap <Leader>r :QuickRun<CR>
-""
-"" quickrun
-""
-let g:quickrun_config = {
-\   'tex': {
-\       'command': 'latexmk',
-\       'outputter' : 'error',
-\       'outputter/error/success' : 'null',
-\       'outputter/error/error' : 'quickfix',
-\       'srcfile' : expand("%"),
-\       'hook/sweep/files' : [
-\                      '%S:p:r.aux',
-\                      '%S:p:r.bbl',
-\                      '%S:p:r.blg',
-\                      '%S:p:r.dvi',
-\                      '%S:p:r.fdb_latexmk',
-\                      '%S:p:r.fls',
-\                      '%S:p:r.log',
-\                      '%S:p:r.out'
-\                      ],
-\       'exec': ['%c -gg -pdfdvi -pv %s', 'evince %s:r.pdf']
-\   }
-\}
-
-let g:rustfmt_autosave = 1
 
 inoremap <silent> jj <Esc>
-inoremap <silent> っj <Esc>
-
-inoremap <C-j> <Down> 
-inoremap <C-k> <Up> 
-inoremap <C-h> <Left> 
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 
-let g:lsp_diagnostics_echo_cursor = 1
-function! s:on_lsp_buffer_enabled() abort
-  setlocal omnifunc=lsp#complete
-  setlocal signcolumn=yes
-  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-  nmap <buffer> gd <plug>(lsp-definition)
-  nmap <buffer> gr <plug>(lsp-references)
-  nmap <buffer> gi <plug>(lsp-implementation)
-  nmap <buffer> gt <plug>(lsp-type-definition)
-  nmap <buffer> <leader>rn <plug>(lsp-rename)
-  nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-  nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-  nmap <buffer> K <plug>(lsp-hover)
-endfunction
+" Fern自動起動
+augroup __fern__
+  autocmd!
+  autocmd VimEnter * ++nested Fern . -drawer -stay -keep -toggle -reveal=%
+augroup END
 
-"vimtexの設定
-let g:tex_flavor = "latex"
-let g:latex_latexmk_options = '-pdf'
+nnoremap <C-n> :Fern . -drawer -stay -keep -toggle -reveal=%<cr>
 
-""
-"" Vim-LaTeX
-""
-filetype plugin on
-filetype indent on
-set shellslash
-set grepprg=grep\ -nH\ $*
-let g:tex_flavor='latex'
-let g:Imap_UsePlaceHolders = 1
-let g:Imap_DeleteEmptyPlaceHolders = 1
-let g:Imap_StickyPlaceHolders = 0
-let g:Tex_DefaultTargetFormat = 'pdf'
-let g:Tex_MultipleCompileFormats='dvi,pdf'
-"let g:Tex_FormatDependency_pdf = 'pdf'
-let g:Tex_FormatDependency_pdf = 'dvi,pdf'
-"let g:Tex_CompileRule_pdf = 'ptex2pdf -u -l -ot -synctex=1 -interaction=nonstopmode -file-line-error-style" $*'
-"let g:Tex_CompileRule_pdf = 'lualatex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
-let g:Tex_CompileRule_pdf = 'latexmk $*'
-"let g:Tex_CompileRule_dvi = 'uplatex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
-let g:Tex_CompileRule_dvi = 'latexmk $*'
-let g:Tex_BibtexFlavor = 'upbibtex'
-let g:Tex_MakeIndexFlavor = 'upmendex $*.idx'
-let g:Tex_UseEditorSettingInDVIViewer = 1
-"let g:Tex_ViewRule_pdf = 'xdg-open'
-let g:Tex_ViewRule_pdf = 'evince'
-"let g:Tex_ViewRule_pdf = 'okular --unique'
-"let g:Tex_ViewRule_pdf = 'zathura -x vim'
-"let g:Tex_ViewRule_pdf = 'qpdfview --unique'
-"let g:Tex_ViewRule_pdf = 'texworks'
-"let g:Tex_ViewRule_pdf = 'mupdf'
-"let g:Tex_ViewRule_pdf = 'firefox -new-window'
-"let g:Tex_ViewRule_pdf = 'chromium --new-window'
+" Rustの設定
+let g:rustfmt_autosave = 1
+
+" OmniSharpの設定
+inoremap <expr> <Tab> pumvisible() ? '<C-n>' :                                                                                                                    
+\ getline('.')[col('.')-2] =~# '[[:alnum:].-_#$]' ? '<C-x><C-o>' : '<Tab>'
+
+nnoremap <gf> :OmniSharpFindUsages<CR>
+nnoremap <gd> :OmniSharpGotoDefinition<CR>
+nnoremap <gp> :OmniSharpPreviewDefinition<CR>
+nnoremap <gr> :!dotnet run
+
+let g:OmniSharp_server_type='roslyn'
+let g:OmniSharp_server_path = '/Path/To/OmniSharp.exe'
+let g:OmniSharp_server_use_mono = 1
