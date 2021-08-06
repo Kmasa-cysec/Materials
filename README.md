@@ -18,7 +18,7 @@ for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
 done
 ```
 
-- chose theme (powerlevel10k)  
+- Chose theme (powerlevel10k)  
 `prompt -s powerlevel10k`
 or  
 add to ~/.zpreztorc  
