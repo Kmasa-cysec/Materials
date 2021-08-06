@@ -1,4 +1,4 @@
-# 素材置き場
+# 素材置き場 & 備忘録
 ## Shellの環境設定
 - Install zsh  
 `sudo apt install zsh`  
