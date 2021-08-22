@@ -37,7 +37,7 @@ Meslo Nerd Font
 add to ~/.zpreztorc  
 ```
 'syntax-highlighting' \  
-'autosuggesitons' \
+'autosuggestions' \
 ```
 ```
 zstyle ':preztp:module:syntax-highlighting' color 'yes'  
